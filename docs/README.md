@@ -1,4 +1,4 @@
-# AI Recipe Generator
+# AI Recipe Generator(※展望込み込みです)
 
 ## 📑 概要
 

@@ -35,6 +35,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'software.amazon.awssdk:bedrock:2.24.0'
+	implementation 'software.amazon.awssdk:bedrockruntime:2.24.0'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+	implementation 'jakarta.annotation:jakarta.annotation-api'
 }
 
 tasks.named('test') {

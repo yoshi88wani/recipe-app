@@ -50,7 +50,7 @@ export function IngredientForm({ onSubmit, isLoading = false }: IngredientFormPr
                 value={ingredient}
                 onChange={(e) => handleChange(index, e.target.value)}
                 placeholder="例：じゃがいも、玉ねぎ、鶏もも肉"
-                className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="flex-1 p-3 border border-gray-300 rounded-lg bg-white text-gray-800 font-medium placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-sm"
               />
               <button
                 type="button"

@@ -13,3 +13,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
+
+# AWS設定
+aws:
+  region: ap-northeast-1
+  bedrock:
+    model-id: anthropic.claude-3-haiku-20240307-v1:0  # 使用するモデルID

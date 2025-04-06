@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: recipe-app
+  datasource:
+    url: jdbc:postgresql://localhost:5432/recipe_db
+    username: yoshidakenta  # あなたのMacユーザー名
+    password:               # パスワードがあれば設定
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update     # 開発時はupdate、本番ではvalidate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true

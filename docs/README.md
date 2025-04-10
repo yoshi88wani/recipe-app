@@ -69,7 +69,3 @@ recipe-app/
 - [システム設計](./system-design.md) - アーキテクチャとAI連携の詳細
 - [機能仕様](./functional-specs.md) - 機能とAPI仕様
 - [運用ガイド](./operations.md) - 認証と運用手順
-
-## 📝 ライセンス
-
-MIT 

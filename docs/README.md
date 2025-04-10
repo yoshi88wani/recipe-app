@@ -1,11 +1,9 @@
-# AI Recipe Generator(※展望込み込みです)
+# AI Recipe Generator(※実装途中です)
 
 ## 📑 概要
 
 AI Recipe Generatorは、冷蔵庫にある食材からレシピを自動生成するアプリケーションです。AWS Bedrockを活用したAI機能により、ユーザーの好みや条件に合わせたパーソナライズされたレシピを提案します。
-Cursorのお試しも兼ねておりますので、ドキュメントと実装の多少のズレはご容赦ください。
-
-![アプリケーション概要](https://placeholder-for-app-screenshot.com/screenshot.png)
+Cursorの検証も兼ねておりますので、ドキュメントと実装の多少のズレはご容赦ください。
 
 ## 🎯 目的
 

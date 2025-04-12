@@ -5,6 +5,13 @@ import { IngredientForm } from '@/components/ingredient-form';
 import { RecipeList } from '@/components/recipe-list';
 import { Recipe, RecipeRequest } from '@/types';
 
+// 難易度のマッピング
+const difficultyMapping = {
+  '簡単': 'EASY',
+  '普通': 'MEDIUM',
+  '難しい': 'HARD'
+};
+
 // 検索結果の永続化のための型
 interface StoredRecipeData {
   recipes: Recipe[];
@@ -41,17 +48,22 @@ export default function Home() {
     }
   }, []);
 
-  const handleSubmit = async (ingredients: string[]) => {
+  const handleSubmit = async (data: { ingredients: string[], difficultyLevel?: '簡単' | '普通' | '難しい' | undefined }) => {
     setIsLoading(true);
     setError(null);
     
     try {
+      // 難易度の変換
+      const apiDifficulty = data.difficultyLevel 
+        ? difficultyMapping[data.difficultyLevel]
+        : 'EASY'; // デフォルト値
+      
       // リクエストの準備
       const request: RecipeRequest = {
-        ingredients,
+        ingredients: data.ingredients,
         preferences: {
           cookingTime: 'UNDER_30_MIN',
-          difficulty: 'EASY',
+          difficulty: apiDifficulty,
           servingSize: 2
         }
       };
@@ -72,33 +84,39 @@ export default function Home() {
       const result = await response.json();
       console.log('APIレスポンス:', result);
       
-      if (!result.success) {
-        throw new Error(result.message || 'レシピの取得に失敗しました');
-      }
-      
-      // データの存在確認と安全な処理
-      if (result.data && Array.isArray(result.data.recipes)) {
-        console.log(`${result.data.recipes.length}件のレシピを取得しました`);
-        setRecipes(result.data.recipes);
+      // バックエンドが直接レシピ配列を返している場合の処理
+      if (Array.isArray(result)) {
+        console.log(`${result.length}件のレシピを取得しました`);
+        setRecipes(result);
         
         // localStorageに検索結果を保存
         const storageData: StoredRecipeData = {
-          recipes: result.data.recipes,
+          recipes: result,
           timestamp: Date.now()
         };
         localStorage.setItem('recipeSearchResults', JSON.stringify(storageData));
-      } else if (result.data && result.data.recipes) {
-        // 配列でない場合は配列にラップする
-        const recipesArray = Array.isArray(result.data.recipes) ? result.data.recipes : [result.data.recipes];
-        console.log(`${recipesArray.length}件のレシピ（配列変換後）を取得しました`);
-        setRecipes(recipesArray);
-        
-        // localStorageに保存
-        const storageData: StoredRecipeData = {
-          recipes: recipesArray,
-          timestamp: Date.now()
-        };
-        localStorage.setItem('recipeSearchResults', JSON.stringify(storageData));
+      }
+      // 従来の形式の場合（success, dataフィールドがある場合）の処理
+      else if (result.success && result.data) {
+        // レスポンスの詳細をログに出力
+        console.log('レスポンスのデータ部分:', result.data);
+        if (result.data && result.data.recipes) {
+          console.log('レシピデータ:', result.data.recipes);
+          console.log(`${result.data.recipes.length}件のレシピを取得しました`);
+
+          // レシピデータを設定
+          setRecipes(result.data.recipes);
+          
+          // localStorageに検索結果を保存
+          const storageData: StoredRecipeData = {
+            recipes: result.data.recipes,
+            timestamp: Date.now()
+          };
+          localStorage.setItem('recipeSearchResults', JSON.stringify(storageData));
+        } else {
+          console.error('レシピデータが見つかりません:', result);
+          setError('レシピデータが見つかりません。もう一度お試しください。');
+        }
       } else {
         console.error('レシピデータが不正な形式です:', result);
         setError('レシピデータの形式が正しくありません。');

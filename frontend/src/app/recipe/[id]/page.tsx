@@ -8,30 +8,30 @@ import Link from 'next/link';
 export default function RecipeDetail() {
   const params = useParams();
   const recipeId = params.id as string;
-  
+
   const [recipe, setRecipe] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   useEffect(() => {
     const fetchRecipe = async () => {
       setIsLoading(true);
       setError(null);
-      
+
       try {
         // APIを呼び出す
         const response = await fetch(`http://localhost:8080/api/v1/recipes/${recipeId}`);
-        
+
         if (!response.ok) {
           throw new Error(`APIエラー: ${response.status}`);
         }
-        
+
         const result = await response.json();
-        
+
         if (!result.success) {
           throw new Error(result.message || 'レシピの取得に失敗しました');
         }
-        
+
         setRecipe(result.data.recipe);
       } catch (err) {
         console.error('レシピ取得エラー:', err);
@@ -40,10 +40,10 @@ export default function RecipeDetail() {
         setIsLoading(false);
       }
     };
-    
+
     fetchRecipe();
   }, [recipeId]);
-  
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 py-12 px-4">
@@ -55,7 +55,7 @@ export default function RecipeDetail() {
       </div>
     );
   }
-  
+
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 py-12 px-4">
@@ -71,7 +71,7 @@ export default function RecipeDetail() {
       </div>
     );
   }
-  
+
   if (!recipe) {
     return (
       <div className="min-h-screen bg-gray-50 py-12 px-4">
@@ -87,7 +87,7 @@ export default function RecipeDetail() {
       </div>
     );
   }
-  
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-4xl mx-auto">
@@ -96,23 +96,23 @@ export default function RecipeDetail() {
             <span className="mr-1">←</span> トップに戻る
           </Link>
         </div>
-        
+
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="p-6">
             <h1 className="text-3xl font-bold mb-2 text-gray-900">{recipe.title}</h1>
             <p className="text-lg text-gray-600 mb-6">{recipe.description}</p>
-            
+
             <div className="flex flex-wrap gap-2 mb-6">
               {recipe.tags && recipe.tags.map((tag, index) => (
-                <span 
-                  key={`${tag}-${index}`} 
+                <span
+                  key={`${tag}-${index}`}
                   className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full"
                 >
                   {tag}
                 </span>
               ))}
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
               <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg">
                 <span className="text-sm text-gray-500">調理時間</span>
@@ -121,7 +121,7 @@ export default function RecipeDetail() {
               <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg">
                 <span className="text-sm text-gray-500">難易度</span>
                 <span className="text-xl font-semibold">
-                  {recipe.difficulty === 'EASY' ? '簡単' : 
+                  {recipe.difficulty === 'EASY' ? '簡単' :
                    recipe.difficulty === 'MEDIUM' ? '普通' : '難しい'}
                 </span>
               </div>
@@ -130,7 +130,7 @@ export default function RecipeDetail() {
                 <span className="text-xl font-semibold">{recipe.servingSize}人分</span>
               </div>
             </div>
-            
+
             <div className="mb-8">
               <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">材料</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
@@ -147,7 +147,7 @@ export default function RecipeDetail() {
                 ))}
               </div>
             </div>
-            
+
             <div>
               <h2 className="text-xl font-semibold mb-4 pb-2 border-b border-gray-200">作り方</h2>
               <ol className="list-decimal pl-6 space-y-4">
@@ -156,7 +156,7 @@ export default function RecipeDetail() {
                 ))}
               </ol>
             </div>
-            
+
             {recipe.nutritionInfo && (
               <div className="mt-8 pt-6 border-t border-gray-200">
                 <h2 className="text-xl font-semibold mb-4">栄養成分（1人前）</h2>
@@ -180,7 +180,7 @@ export default function RecipeDetail() {
                 </div>
               </div>
             )}
-            
+
             <div className="mt-8 flex justify-center">
               <button className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg">
                 お気に入りに追加

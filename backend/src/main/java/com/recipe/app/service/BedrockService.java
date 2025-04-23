@@ -1,21 +1,21 @@
 package com.recipe.app.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
-import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient;
 import software.amazon.awssdk.services.bedrockruntime.model.InvokeModelRequest;
 import software.amazon.awssdk.services.bedrockruntime.model.InvokeModelResponse;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class BedrockService {
@@ -77,9 +77,9 @@ public class BedrockService {
             // Claude 3のリクエスト形式
             ObjectNode requestBody = objectMapper.createObjectNode();
             requestBody.put("anthropic_version", "bedrock-2023-05-31");
-            requestBody.put("max_tokens", maxTokens);         // 設定から読み込む
-            requestBody.put("temperature", temperature);      // 設定から読み込む
-            requestBody.put("top_p", topP);                   // 設定から読み込む
+            requestBody.put("max_tokens", maxTokens);
+            requestBody.put("temperature", temperature);
+            requestBody.put("top_p", topP);
 
             ObjectNode userMessage = objectMapper.createObjectNode();
             userMessage.put("role", "user");
@@ -179,10 +179,9 @@ public class BedrockService {
         }
 
         // プロンプト
-        promptBuilder.append("あなたは凄腕の料理人です。以下の食材を使用した")
-                .append(recipeCount).append("種類のレシピを作成してください。")
-                .append("難易度は【").append(difficultyDescription).append("】で、指定された食材を全て活用してください。")
-                .append("出力はJSON配列形式のみにしてください。\n\n");
+        promptBuilder.append("あなたは料理のプロフェッショナルです。以下の食材を使った")
+                .append(recipeCount).append("つのレシピを作成してください。\n")
+                .append("難易度は【").append(difficultyDescription).append("】です。\n\n");
 
         // 食材リスト
         promptBuilder.append("食材:\n");
@@ -191,12 +190,12 @@ public class BedrockService {
         }
 
         // 好み/条件（簡略化）
-        promptBuilder.append("\n条件:\n");
+        promptBuilder.append("\n【条件】\n");
         promptBuilder.append("- 難易度: ").append(difficultyCode).append("\n");
 
         if (preferences != null) {
             if (preferences.containsKey("cookingTime")) {
-                promptBuilder.append("- 調理時間: ").append(preferences.get("cookingTime")).append("\n");
+                promptBuilder.append("- 調理時間: ").append(preferences.get("cookingTime")).append("分\n");
             }
 
             if (preferences.containsKey("servingSize")) {
@@ -208,8 +207,8 @@ public class BedrockService {
             }
         }
 
-        // JSON出力形式
-        promptBuilder.append("\n以下のJSON形式の配列でレシピを").append(recipeCount).append("種類のレシピを出力してください:\n");
+        // JSON出力形式を厳格に指定
+        promptBuilder.append("\n【重要】以下のJSON形式の配列でレシピを出力してください。説明文は一切不要です。:\n");
         promptBuilder.append("[\n");
         promptBuilder.append("  {\n");
         promptBuilder.append("    \"title\": \"レシピタイトル\",\n");
@@ -217,15 +216,18 @@ public class BedrockService {
         promptBuilder.append("    \"ingredients\": [\n");
         promptBuilder.append("      { \"name\": \"材料名\", \"quantity\": \"数量\", \"unit\": \"単位\", \"note\": \"備考\" }\n");
         promptBuilder.append("    ],\n");
-        promptBuilder.append("    \"instructions\": [\"手順1\", \"手順2\", ...],\n");
+        promptBuilder.append("    \"instructions\": [\"手順1\", \"手順2\", \"手順3\"],\n");
         promptBuilder.append("    \"cookingTime\": 30,\n");
         promptBuilder.append("    \"difficulty\": \"" + difficultyCode + "\",\n");
         promptBuilder.append("    \"servingSize\": 2,\n");
-        promptBuilder.append("    \"tags\": [\"和食\", \"煮物\", ...]\n");
-        promptBuilder.append("  },\n");
-        promptBuilder.append("  {...},\n");
-        promptBuilder.append("  {...}\n");
-        promptBuilder.append("]\n");
+        promptBuilder.append("    \"tags\": [\"和食\", \"煮物\", \"簡単\"]\n");
+        promptBuilder.append("  }\n");
+        promptBuilder.append("]\n\n");
+        promptBuilder.append("【注意】\n");
+        promptBuilder.append("・JSONのみを出力し、他の説明文は一切不要です\n");
+        promptBuilder.append("・有効なJSONフォーマットに必ず従ってください\n");
+        promptBuilder.append("・レシピ数は").append(recipeCount).append("つのみにしてください\n");
+        promptBuilder.append("・手順（instructions）には番号（1., 2., 1.1.など）を付けないでください。単純な文として記述してください");
 
         return promptBuilder.toString();
     }

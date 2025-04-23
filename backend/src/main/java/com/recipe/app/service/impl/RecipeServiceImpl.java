@@ -1,19 +1,25 @@
 package com.recipe.app.service.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.recipe.app.dto.RecipeRequest;
 import com.recipe.app.dto.RecipeResponse;
 import com.recipe.app.model.Ingredient;
 import com.recipe.app.model.NutritionInfo;
 import com.recipe.app.model.Recipe;
 import com.recipe.app.repository.RecipeRepository;
-import com.recipe.app.service.RecipeService;
 import com.recipe.app.service.BedrockService;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
+import com.recipe.app.service.RecipeService;
 
 /**
  * レシピサービスの実装クラス
@@ -304,7 +310,22 @@ public class RecipeServiceImpl implements RecipeService {
         List<String> instructions = new ArrayList<>();
         JsonNode instructionNodes = jsonNode.get("instructions");
         for (JsonNode instructionNode : instructionNodes) {
-            instructions.add(instructionNode.asText());
+            String instruction = instructionNode.asText();
+            
+            // 手順の番号フォーマット（1., 1.1., Step 1:など）を削除
+            instruction = instruction.replaceAll("^\\s*\\d+\\.\\d+\\.\\s*", ""); // 1.1. 形式を削除
+            instruction = instruction.replaceAll("^\\s*\\d+\\.\\s*", "");  // 1. 形式を削除
+            instruction = instruction.replaceAll("^\\s*Step\\s+\\d+[:\\. ]*\\s*", ""); // Step 1: 形式を削除
+            
+            // 先頭の空白を削除
+            instruction = instruction.trim();
+            
+            // 最初の文字を大文字に（あれば）
+            if (!instruction.isEmpty()) {
+                instruction = Character.toUpperCase(instruction.charAt(0)) + instruction.substring(1);
+            }
+            
+            instructions.add(instruction);
         }
         recipe.setInstructions(instructions);
         

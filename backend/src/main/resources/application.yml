@@ -21,7 +21,7 @@ aws:
     # オンデマンドスループットをサポートするAnthropicのモデル
     model-id: anthropic.claude-3-haiku-20240307-v1:0  # 小型で高速なClaude 3モデル
     
-    # AIモデル生成パラメータ（Claude Haiku向けに最適化）
+    # AIモデル生成パラメータ
     parameters:
       temperature: 0.7       # 低めの温度で予測可能なレスポンスを生成
       max-tokens: 4000       # トークン数
@@ -31,9 +31,9 @@ aws:
     
     # ネットワーク接続設定
     connection:
-      timeout: 60000         # タイムアウトを60秒
-      connection-timeout: 10000 # 接続確立時間を10秒
-      max-retries: 5         # 最大リトライ回数を5回
+      timeout: 60000         # タイムアウト60秒
+      connection-timeout: 10000 # 接続確立時間10秒
+      max-retries: 3         # 最大リトライ回数3回
     
     # キャッシュ設定（同じ食材リクエストの高速化）
     cache:

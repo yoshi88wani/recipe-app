@@ -337,4 +337,54 @@ AWS Well-Architected Frameworkのセキュリティの柱に基づき、以下�
 
 3. **外部連携**
    - 食材配達サービスとの連携
-   - 栄養管理アプリとの連携 
+   - 栄養管理アプリとの連携
+
+## 7. 開発環境
+
+### 7.1 Docker開発環境
+
+効率的な開発とチーム間の環境の一貫性を確保するために、Dockerを使用した開発環境を提供しています。
+
+#### Docker環境の概要図
+
+```mermaid
+graph TD
+    subgraph "Docker環境"
+        A[Docker Compose] --> B[PostgreSQL]
+        A --> C[Spring Boot Backend]
+        A --> D[Next.js Frontend]
+        C --> B
+        D --> C
+    end
+    
+    subgraph "AWS Services"
+        E[AWS Bedrock]
+    end
+    
+    C --> E
+    
+    style A fill:#bbf,stroke:#333,stroke-width:1px
+    style B fill:#ff9,stroke:#333,stroke-width:1px
+    style C fill:#bfb,stroke:#333,stroke-width:1px
+    style D fill:#fbb,stroke:#333,stroke-width:1px
+    style E fill:#fcf,stroke:#333,stroke-width:1px
+```
+
+#### Docker環境の利点
+
+1. **環境一貫性**: 全開発者が同一環境で開発可能
+2. **依存関係の分離**: アプリケーションの依存関係をコンテナ内に閉じ込め
+3. **簡単なセットアップ**: 「docker-compose up」で環境構築
+4. **本番環境への移行容易性**: コンテナ化によりクラウドへのデプロイが容易
+
+詳細な Docker 環境のセットアップと使用方法については、[運用ガイド](./operations.md#8-docker開発環境)を参照してください。
+
+### 7.2 開発ツール
+
+開発には以下のツールを推奨します：
+
+- **IDE**: IntelliJ IDEA または VS Code
+- **API テスト**: Postman または REST Client
+- **データベース管理**: DBeaver または pgAdmin
+- **CI/CD**: GitHub Actions
+- **ドキュメント**: Markdown + Mermaid 

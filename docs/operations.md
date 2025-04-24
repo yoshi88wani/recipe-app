@@ -459,22 +459,132 @@ new lambda.Function(this, 'RecipeApiFunction', {
    - マルチリージョンバックアップから復元
    - 手動でのリソース再作成
 
-## 8. よくある問題と解決策
+## 8. Docker開発環境
 
-### 8.1 認証関連
+### 8.1 Docker環境の概要
 
-- **問題**: トークン期限切れによるAPIエラー
-- **解決策**: リフレッシュトークンフローの実装、自動再試行ロジックの追加
+このプロジェクトではDocker Composeを使用して、以下のサービスを含む完全な開発環境を構築しています：
 
-### 8.2 デプロイ関連
+- **PostgreSQLデータベース**: アプリケーションデータの永続化
+- **Spring Bootバックエンド**: REST APIの提供
+- **Next.jsフロントエンド**: ユーザーインターフェース
+- **AWS SDK**: Bedrockサービスへの接続
 
-- **問題**: CloudFormationスタックデプロイ失敗
-- **解決策**: ログの確認、手動リソース削除後の再デプロイ
+```mermaid
+graph TD
+    DC[Docker Compose] --> DB[(PostgreSQL)]
+    DC --> BE[Spring Boot Backend]
+    DC --> FE[Next.js Frontend]
+    BE --> AWS[AWS Bedrock]
+    FE --> BE
+    BE --> DB
+```
 
-### 8.3 AI関連
+### 8.2 環境設定
 
-- **問題**: Bedrockレスポンスのタイムアウト
-- **解決策**: Lambda関数のタイムアウト延長、非同期処理への変更
+Dockerコンテナの設定は以下のファイルで管理されています：
+
+- `docker-compose.yml`: 全体の構成定義
+- `backend/Dockerfile`: バックエンドのビルド手順
+- `frontend/Dockerfile`: フロントエンドのビルド手順
+- `backend/src/main/resources/application-docker.yml`: Docker環境用Spring設定
+
+**AWS認証情報の設定**:
+Docker環境でAWS Bedrockを使用するには、`~/.aws/credentials`ファイルが正しく設定されていることを確認してください。Docker Composeはこのファイルをコンテナにマウントします。
+
+### 8.3 環境の起動と停止
+
+**起動手順**:
+```bash
+# プロジェクトのルートディレクトリで実行
+docker-compose up -d  # デタッチモード（バックグラウンド）で起動
+```
+
+**停止手順**:
+```bash
+docker-compose down   # コンテナを停止・削除
+```
+
+**データベースの永続化**:
+```bash
+docker-compose down   # コンテナのみ停止（ボリュームは保持）
+docker-compose down -v # ボリュームも含めて完全削除（データはリセット）
+```
+
+### 8.4 アクセス方法
+
+- **フロントエンド**: http://localhost:3000
+- **バックエンドAPI**: http://localhost:8080
+- **APIドキュメント**: http://localhost:8080/swagger-ui.html
+- **データベース**:
+  - ホスト: localhost
+  - ポート: 5432
+  - ユーザー名: postgres
+  - パスワード: postgres
+  - データベース名: recipe_db
+
+### 8.5 開発ワークフロー
+
+1. **コードの編集**: ローカルファイルを編集するとコンテナ内に自動的に反映
+2. **変更の確認**:
+   - フロントエンド: 自動的にホットリロード
+   - バックエンド: Spring Boot Dev Toolsによる自動リロード（Javaファイル変更時）
+3. **ログの確認**:
+   ```bash
+   docker-compose logs -f backend  # バックエンドのログをリアルタイム表示
+   docker-compose logs -f frontend # フロントエンドのログをリアルタイム表示
+   ```
+
+### 8.6 トラブルシューティング
+
+#### 一般的な問題
+
+| 問題 | 解決策 |
+|------|--------|
+| コンテナが起動しない | `docker-compose logs <サービス名>` でエラーを確認 |
+| ポートの競合 | `docker-compose down` 後、競合するアプリを停止して再起動 |
+| ネットワークエラー | `docker network prune` で未使用ネットワークを削除 |
+| データベース接続エラー | `docker-compose restart db` でDBを再起動 |
+
+#### Bedrockサービス関連の問題
+
+1. **認証エラー**: AWS認証情報が正しく設定されているか確認
+   ```bash
+   docker-compose exec backend ls -la /root/.aws  # 認証ファイルの存在確認
+   docker-compose exec backend cat /root/.aws/credentials  # 内容確認（機密情報に注意）
+   ```
+
+2. **モデル利用制限**: AWS Bedrockコンソールでモデルへのアクセス権限を確認
+
+3. **レスポンス解析エラー**: `BedrockService`のログを詳細に確認
+   ```bash
+   docker-compose logs -f backend | grep "BedrockService"
+   ```
+
+#### フロントエンド関連の問題
+
+1. **APIアクセスエラー**: CORSやネットワーク設定を確認
+   ```bash
+   # application-docker.ymlでCORS設定を確認
+   docker-compose exec backend cat /app/classes/application-docker.yml | grep cors -A 10
+   ```
+
+2. **ビルドエラー**:
+   ```bash
+   docker-compose logs frontend  # ビルドログを確認
+   docker-compose exec frontend npm install  # 依存関係を再インストール
+   ```
+
+### 8.7 本番環境への移行
+
+Docker開発環境から本番環境へ移行する際の注意点：
+
+1. **機密情報**: 本番環境ではシークレットをDockerファイルではなく環境変数やSecrets Managerで管理
+2. **スケーリング**: 本番環境ではKubernetesなどを使用して水平スケーリングを検討
+3. **セキュリティ**: 本番用イメージはセキュリティスキャンを実施
+4. **CI/CD**: GitHub ActionsやJenkinsでCIパイプラインの構築を検討
+
+詳細なデプロイガイドについては「[5. デプロイ手順](#5-デプロイ手順)」を参照してください。
 
 ## 9. アップデート手順
 

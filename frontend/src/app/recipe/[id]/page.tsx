@@ -20,7 +20,7 @@ export default function RecipeDetail() {
 
       try {
         // APIを呼び出す
-        const response = await fetch(`http://localhost:8080/api/v1/recipes/${recipeId}`);
+        const response = await fetch(`/api/v1/recipes/${recipeId}`);
 
         if (!response.ok) {
           throw new Error(`APIエラー: ${response.status}`);

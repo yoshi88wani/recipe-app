@@ -68,8 +68,13 @@ export default function Home() {
         }
       };
       
+      // デバッグ情報：リクエスト内容を記録
+      console.log('=== リクエスト詳細 ===');
+      console.log('送信先URL:', '/api/v1/recipes/suggest');
+      console.log('リクエスト本文:', JSON.stringify(request, null, 2));
+      
       // APIを呼び出す
-      const response = await fetch('http://localhost:8080/api/v1/recipes/suggest', {
+      const response = await fetch('/api/v1/recipes/suggest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +82,23 @@ export default function Home() {
         body: JSON.stringify(request),
       });
       
+      // デバッグ情報：レスポンスの詳細を記録
+      console.log('=== レスポンス詳細 ===');
+      console.log('ステータスコード:', response.status);
+      console.log('ステータステキスト:', response.statusText);
+      console.log('レスポンスヘッダー:');
+      response.headers.forEach((value, key) => {
+        console.log(`  ${key}: ${value}`);
+      });
+      
+      // 500エラーの場合はレスポンス本文を取得して表示
       if (!response.ok) {
+        try {
+          const errorText = await response.text();
+          console.error('エラーレスポンス本文:', errorText);
+        } catch (textError) {
+          console.error('エラーレスポンス本文の取得に失敗:', textError);
+        }
         throw new Error(`APIエラー: ${response.status}`);
       }
       

@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # データベース
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=recipe_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - recipe-network
+
+# バックエンドAPI
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/recipe_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    volumes:
+      - ./backend:/app
+    networks:
+      - recipe-network
+      
+  # フロントエンド
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - recipe-network
+
+networks:
+  recipe-network:
+    driver: bridge
+
+volumes:
+  postgres-data: 

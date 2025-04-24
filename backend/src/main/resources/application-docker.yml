@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: recipe-app
+  datasource:
+    url: jdbc:postgresql://db:5432/recipe_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update     # 開発環境では自動更新、本番環境ではvalidateに変更すること
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true         # SQLログを表示（開発用）
+
+# AWS設定
+aws:
+  region: ap-northeast-1   # 東京リージョン
+  bedrock:
+    # オンデマンドスループットをサポートするAnthropicのモデル
+    model-id: anthropic.claude-3-haiku-20240307-v1:0  # 小型で高速なClaude 3モデル
+    
+    # AIモデル生成パラメータ
+    parameters:
+      temperature: 0.7       # 低めの温度で予測可能なレスポンスを生成
+      max-tokens: 4000       # トークン数
+      top-p: 0.9             # より確率の高い単語のみを使用
+      # JSON形式出力を強制するストップシーケンス
+      stop-sequences: ["```"]  # コードブロック終了で停止
+    
+    # ネットワーク接続設定
+    connection:
+      timeout: 60000         # タイムアウト60秒
+      connection-timeout: 10000 # 接続確立時間10秒
+      max-retries: 3         # 最大リトライ回数3回
+    
+    # キャッシュ設定（同じ食材リクエストの高速化）
+    cache:
+      enabled: true          # 同じ食材組み合わせのキャッシュを有効化
+      ttl-minutes: 60       # キャッシュの有効期間
+    
+    # ログ設定
+    logging:
+      enabled: true          # ログ記録を有効化
+      include-request-body: true  # リクエスト内容を記録
+      include-response-body: false # レスポンスボディは大きいので記録しない
+      log-level: INFO        # 情報レベルのログ
+
+# アプリケーション固有の設定
+app:
+  cors:
+    # Docker環境でのCORS設定
+    allowed-origins: http://localhost:3000, http://frontend:3000
+    allowed-methods: GET, POST, PUT, DELETE
+    allowed-headers: Content-Type, Authorization
+  
+  # フロントエンドアプリケーションのURL
+  frontend-url: http://localhost:3000
+
+# ロギング設定
+logging:
+  level:
+    root: INFO                       # アプリ全体のログレベル
+    com.recipe.app: DEBUG            # アプリケーションパッケージのログレベル
+    org.springframework.web: INFO    # Spring Webコンポーネントのログレベル
+    org.hibernate: INFO              # Hibernateのログレベル 

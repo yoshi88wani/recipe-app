@@ -1,8 +1,62 @@
-backend/.gradle
+# Java関連
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+*.hprof
+
+# Gradle関連
+.gradle/
 build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+out/
+gradle-app.setting
+.gradletasknamecache
+
+# IntelliJ IDEA関連
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VSCode関連
+.vscode/
+.settings/
+.classpath
+.project
+
+# Node.js関連
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Next.js関連
+.next/
+out/
+
+# AWS認証情報
+backend/aws-config/credentials
+
+# Docker関連
+.docker/
+docker-compose.override.yml
+
+# データベース関連
+postgres-data/
+
+# OS関連
+.DS_Store
+Thumbs.db
+*~
+._*
+
+# 一時ファイル
+*.tmp
+*.bak
+*.swp
+*.lock
 
 ### IntelliJ IDEA ###
 backend/.idea/modules.xml

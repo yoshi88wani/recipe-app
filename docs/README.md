@@ -69,3 +69,4 @@ recipe-app/
 - [システム設計](./system-design.md) - アーキテクチャとAI連携の詳細
 - [機能仕様](./functional-specs.md) - 機能とAPI仕様
 - [運用ガイド](./operations.md) - 認証と運用手順
+  - [Docker開発環境](./operations.md#8-docker開発環境) - Docker環境のセットアップと利用方法

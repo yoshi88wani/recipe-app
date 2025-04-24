@@ -7,7 +7,7 @@
 AI Recipe Generatorは、以下の図のように Amazon Cognito を使用した認証システムを実装しています。
 
 ```mermaid
-graph TD
+flowchart TD
     subgraph "フロントエンド"
         A[ログインページ] --> B[認証状態管理]
         B --> C[保護されたページ]
@@ -25,13 +25,6 @@ graph TD
     D -->|JWT発行| B
     C -->|トークン付きAPI呼び出し| E
     E -->|トークン検証| D
-    
-    style A fill:#bbf,stroke:#333,stroke-width:1px
-    style B fill:#bbf,stroke:#333,stroke-width:1px
-    style C fill:#bbf,stroke:#333,stroke-width:1px
-    style D fill:#ff9,stroke:#333,stroke-width:1px
-    style E fill:#bfb,stroke:#333,stroke-width:1px
-    style F fill:#bfb,stroke:#333,stroke-width:1px
 ```
 
 ### 1.2 認証フロー
@@ -461,42 +454,64 @@ new lambda.Function(this, 'RecipeApiFunction', {
 
 ## 8. Docker開発環境
 
-### 8.1 Docker環境の概要
+### 8.1 概要
 
-このプロジェクトではDocker Composeを使用して、以下のサービスを含む完全な開発環境を構築しています：
-
-- **PostgreSQLデータベース**: アプリケーションデータの永続化
-- **Spring Bootバックエンド**: REST APIの提供
-- **Next.jsフロントエンド**: ユーザーインターフェース
-- **AWS SDK**: Bedrockサービスへの接続
+Docker開発環境では、以下のコンポーネントをコンテナ化して開発を容易にしています：
 
 ```mermaid
-graph TD
-    DC[Docker Compose] --> DB[(PostgreSQL)]
-    DC --> BE[Spring Boot Backend]
-    DC --> FE[Next.js Frontend]
-    BE --> AWS[AWS Bedrock]
-    FE --> BE
-    BE --> DB
+flowchart LR
+    A[開発者] --> B[Docker Compose]
+    B --> C[フロントエンドコンテナ]
+    B --> D[バックエンドコンテナ]
+    B --> E[データベースコンテナ]
+    
+    C -->|3000| A
+    D -->|8080| A
+    D --> E
 ```
 
-### 8.2 環境設定
+### 8.2 環境構築
 
-Dockerコンテナの設定は以下のファイルで管理されています：
+**前提条件**:
+- Docker Desktop がインストール済み
+- AWS CLI が設定済み
 
-- `docker-compose.yml`: 全体の構成定義
-- `backend/Dockerfile`: バックエンドのビルド手順
-- `frontend/Dockerfile`: フロントエンドのビルド手順
-- `backend/src/main/resources/application-docker.yml`: Docker環境用Spring設定
+**セットアップ手順**:
 
-**AWS認証情報の設定**:
-Docker環境でAWS Bedrockを使用するには、`~/.aws/credentials`ファイルが正しく設定されていることを確認してください。Docker Composeはこのファイルをコンテナにマウントします。
+1. **リポジトリのクローン**:
+   ```bash
+   git clone https://github.com/your-username/recipe-app.git
+   cd recipe-app
+   ```
 
-### 8.3 環境の起動と停止
+2. **AWS認証情報の設定**:
+   ```bash
+   mkdir -p backend/aws-config
+   
+   # 認証情報ファイルの作成（必ず自分の有効な認証情報に書き換えてください）
+   cat > backend/aws-config/credentials << EOF
+   [default]
+   aws_access_key_id = YOUR_ACCESS_KEY
+   aws_secret_access_key = YOUR_SECRET_KEY
+   EOF
+   
+   # リージョン設定
+   cat > backend/aws-config/config << EOF
+   [default]
+   region = ap-northeast-1
+   output = json
+   EOF
+   ```
+
+3. **Docker環境の起動**:
+   ```bash
+   docker-compose up -d
+   ```
+
+### 8.3 起動と停止
 
 **起動手順**:
 ```bash
-# プロジェクトのルートディレクトリで実行
 docker-compose up -d  # デタッチモード（バックグラウンド）で起動
 ```
 
@@ -513,15 +528,12 @@ docker-compose down -v # ボリュームも含めて完全削除（データは�
 
 ### 8.4 アクセス方法
 
-- **フロントエンド**: http://localhost:3000
-- **バックエンドAPI**: http://localhost:8080
-- **APIドキュメント**: http://localhost:8080/swagger-ui.html
-- **データベース**:
-  - ホスト: localhost
-  - ポート: 5432
-  - ユーザー名: postgres
-  - パスワード: postgres
-  - データベース名: recipe_db
+| サービス | URL/接続情報 |
+|---------|----------|
+| フロントエンド | http://localhost:3000 |
+| バックエンドAPI | http://localhost:8080 |
+| APIドキュメント | http://localhost:8080/swagger-ui.html |
+| データベース | ホスト: localhost<br>ポート: 5432<br>ユーザー名: postgres<br>パスワード: postgres<br>データベース名: recipe_db |
 
 ### 8.5 開発ワークフロー
 

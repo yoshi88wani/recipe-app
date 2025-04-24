@@ -15,7 +15,7 @@
 ### 2.1 レシピ生成フロー
 
 ```mermaid
-graph TD
+flowchart TD
     A[ホーム画面] --> B[食材入力]
     B --> C[条件設定]
     C --> D[レシピ生成]
@@ -150,11 +150,8 @@ Authorization: Bearer <token>
     "cookingTime": "UNDER_30_MIN",
     "difficulty": "EASY",
     "cuisineType": "JAPANESE",
-    "mealType": "DINNER",
-    "calorieLevel": "MEDIUM",
     "servingSize": 2
-  },
-  "excludedIngredients": ["ピーマン"]
+  }
 }
 ```
 
@@ -174,28 +171,18 @@ Authorization: Bearer <token>
             "quantity": "300",
             "unit": "g",
             "note": "一口大に切る"
-          },
-          // 他の食材...
+          }
         ],
         "instructions": [
           "鶏肉を一口大に切ります",
-          "じゃがいもは皮をむき、4等分に切ります",
-          // 他の手順...
+          "じゃがいもは皮をむき、4等分に切ります"
         ],
         "cookingTime": 25,
         "difficulty": "EASY",
         "servingSize": 2,
-        "tags": ["和食", "煮物", "晩ごはん"],
-        "nutritionInfo": {
-          "calories": 450,
-          "protein": "28g",
-          "carbs": "30g",
-          "fat": "22g"
-        }
+        "tags": ["和食", "煮物"]
       }
-      // 他のレシピ候補...
-    ],
-    "generationId": "gen-abc123"
+    ]
   }
 }
 ```
@@ -208,9 +195,8 @@ Authorization: Bearer <token>
 ```json
 {
   "recipeId": "recipe-123",
-  "notes": "家族に好評だった。次回は塩を少し減らす。",
-  "rating": 4,
-  "tags": ["お気に入り", "定番"]
+  "notes": "家族に好評だった",
+  "rating": 4
 }
 ```
 
@@ -222,9 +208,7 @@ Authorization: Bearer <token>
     "id": "fav-456",
     "recipeId": "recipe-123",
     "title": "鶏肉と野菜の簡単煮物",
-    "notes": "家族に好評だった。次回は塩を少し減らす。",
     "rating": 4,
-    "tags": ["お気に入り", "定番"],
     "createdAt": "2023-06-15T10:30:00Z"
   }
 }
@@ -243,22 +227,14 @@ Authorization: Bearer <token>
     {
       "name": "String",
       "quantity": "String",
-      "unit": "String",
-      "note": "String"
+      "unit": "String"
     }
   ],
   "instructions": ["String"],
   "cookingTime": "Integer",
   "difficulty": "EASY | MEDIUM | HARD",
   "servingSize": "Integer",
-  "tags": ["String"],
-  "nutritionInfo": {
-    "calories": "Integer",
-    "protein": "String",
-    "carbs": "String",
-    "fat": "String"
-  },
-  "createdAt": "DateTime"
+  "tags": ["String"]
 }
 ```
 
@@ -270,12 +246,9 @@ Authorization: Bearer <token>
   "email": "String",
   "name": "String",
   "preferences": {
-    "dietaryRestrictions": ["VEGETARIAN", "GLUTEN_FREE", ...],
+    "dietaryRestrictions": ["VEGETARIAN", "GLUTEN_FREE"],
     "excludedIngredients": ["String"],
-    "preferredCuisines": ["JAPANESE", "ITALIAN", ...],
-    "skillLevel": "BEGINNER | INTERMEDIATE | ADVANCED",
-    "servingSize": "Integer",
-    "caloriePreference": "LOW | MEDIUM | HIGH"
+    "preferredCuisines": ["JAPANESE", "ITALIAN"]
   }
 }
 ```

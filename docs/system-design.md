@@ -4,10 +4,8 @@
 
 AI Recipe Generatorは、フロントエンド、バックエンド、AIサービスを効率的に連携させたクラウドネイティブアプリケーションです。以下の図は全体のアーキテクチャを示しています。
 
-![AWS アーキテクチャ図](https://placeholder-for-architecture-diagram.com/aws-architecture.png)
-
 ```mermaid
-graph TD
+flowchart TD
     subgraph "ユーザー層"
         A[ユーザー] --> B[Next.jsフロントエンド]
     end
@@ -26,12 +24,6 @@ graph TD
         J[Cognito] -->|認証| B
         E -->|認証確認| J
     end
-    
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style F fill:#bfb,stroke:#333,stroke-width:2px
-    style H fill:#bfb,stroke:#333,stroke-width:2px
-    style I fill:#ff9,stroke:#333,stroke-width:2px
 ```
 
 ## 2. コンポーネント説明
@@ -183,20 +175,16 @@ public class RecipeGenerationService {
     private String modelId;
     
     public RecipeResponse generateRecipe(RecipeRequest request) {
-        // 1. プロンプト構築
+        // プロンプト構築
         String prompt = promptBuilder.buildRecipePrompt(
             request.getIngredients(),
             request.getPreferences()
         );
         
-        // 2. AIモデル呼び出し
+        // AIモデル呼び出しと結果処理
         String aiResponse = bedrockClient.invokeModel(modelId, prompt);
-        
-        // 3. レスポンス処理
         RecipeResponse response = responseProcessor.processAiResponse(aiResponse);
         
-        // 4. 結果の保存と返却
-        recipesRepository.saveGenerationHistory(response, request);
         return response;
     }
 }
@@ -250,10 +238,8 @@ const aiLambda = new lambda.Function(this, 'AIProcessorLambda', {
   code: lambda.Code.fromAsset('../ai-processor/target/ai-processor.jar'),
   handler: 'com.recipe.ai.LambdaHandler::handleRequest',
   memorySize: 512,
-  timeout: cdk.Duration.seconds(30),
   environment: {
-    BEDROCK_MODEL_ID: 'anthropic.claude-3-sonnet-20240229-v1:0',
-    LOG_LEVEL: 'INFO'
+    BEDROCK_MODEL_ID: 'anthropic.claude-3-sonnet-20240229-v1:0'
   }
 });
 
@@ -348,7 +334,7 @@ AWS Well-Architected Frameworkのセキュリティの柱に基づき、以下�
 #### Docker環境の概要図
 
 ```mermaid
-graph TD
+flowchart TD
     subgraph "Docker環境"
         A[Docker Compose] --> B[PostgreSQL]
         A --> C[Spring Boot Backend]
@@ -362,12 +348,6 @@ graph TD
     end
     
     C --> E
-    
-    style A fill:#bbf,stroke:#333,stroke-width:1px
-    style B fill:#ff9,stroke:#333,stroke-width:1px
-    style C fill:#bfb,stroke:#333,stroke-width:1px
-    style D fill:#fbb,stroke:#333,stroke-width:1px
-    style E fill:#fcf,stroke:#333,stroke-width:1px
 ```
 
 #### Docker環境の利点

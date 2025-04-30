@@ -33,14 +33,14 @@ flowchart TD
 
 ### バックエンド
 - Spring Boot 3.2
-- AWS Lambda (サーバーレス)(予定)
-- Amazon RDS (PostgreSQL)(予定)
+- AWS Lambda (サーバーレス) [未実装]
+- Amazon RDS (PostgreSQL) [未実装]
 
 ### クラウドサービス
 - AWS Bedrock (Claude AI モデル)
-- Amazon Cognito (認証)(予定)
-- API Gateway (REST API)(予定)
-- AWS CDK (インフラのコード化)(予定)
+- Amazon Cognito (認証) [未実装]
+- API Gateway (REST API) [未実装]
+- AWS CDK (インフラのコード化) [未実装]
 
 ## 主要機能
 
@@ -49,12 +49,12 @@ flowchart TD
    - 調理時間、難易度、料理タイプでカスタマイズ
 
 2. **ユーザー管理**
-   - 好みや食事制限の設定 (予定)
-   - お気に入りレシピの保存 (予定)
+   - 好みや食事制限の設定 [未実装]
+   - お気に入りレシピの保存 [未実装]
 
 3. **食材管理**
-   - 在庫食材の管理と賞味期限通知 (予定)
-   - 買い物リスト生成 (予定)
+   - 在庫食材の管理と賞味期限通知 [未実装]
+   - 買い物リスト生成 [未実装]
 
 ## プロジェクト構成
 
@@ -63,7 +63,7 @@ recipe-app/
 ├── docs/           # プロジェクトドキュメント
 ├── frontend/       # Next.jsフロントエンド
 ├── backend/        # Spring Bootバックエンド
-└── infrastructure/ # AWS CDKインフラコード (予定)
+└── infrastructure/ # AWS CDKインフラコード [未実装]
 ```
 
 ## ドキュメント

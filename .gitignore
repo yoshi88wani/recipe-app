@@ -37,7 +37,7 @@ yarn-error.log
 out/
 
 # AWS認証情報
-backend/aws-config/credentials
+backend/aws-config/*
 
 # Docker関連
 .docker/

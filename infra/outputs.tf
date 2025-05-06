@@ -43,4 +43,20 @@ output "public_subnet_ids" {
 output "private_subnet_ids" {
   description = "プライベートサブネットのID一覧"
   value       = module.vpc.private_subnets
+}
+
+# RDS関連の出力値
+output "db_instance_endpoint" {
+  description = "RDBインスタンスのエンドポイント"
+  value       = aws_db_instance.postgres.endpoint
+}
+
+output "db_instance_name" {
+  description = "RDBインスタンスのデータベース名"
+  value       = aws_db_instance.postgres.db_name
+}
+
+output "db_instance_status" {
+  description = "RDBインスタンスのステータス"
+  value       = aws_db_instance.postgres.status
 } 

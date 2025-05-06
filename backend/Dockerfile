@@ -21,6 +21,9 @@ FROM openjdk:17-slim
 
 WORKDIR /app
 
+# curlとwgetをインストール（ヘルスチェック用）
+RUN apt-get update && apt-get install -y curl wget && rm -rf /var/lib/apt/lists/*
+
 # ビルドステージからjarファイルをコピー
 COPY --from=build /app/build/libs/*.jar app.jar
 

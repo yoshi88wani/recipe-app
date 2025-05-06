@@ -33,14 +33,13 @@ flowchart TD
 
 ### バックエンド
 - Spring Boot 3.2
-- AWS Lambda (サーバーレス) [未実装]
+- AWS ECS（Fargate） [未実装]
 - Amazon RDS (PostgreSQL) [未実装]
 
 ### クラウドサービス
 - AWS Bedrock (Claude AI モデル)
 - Amazon Cognito (認証) [未実装]
 - API Gateway (REST API) [未実装]
-- AWS CDK (インフラのコード化) [未実装]
 
 ## 主要機能
 

@@ -105,4 +105,49 @@ variable "health_check_path_backend" {
   description = "バックエンドのヘルスチェックパス"
   type        = string
   default     = "/actuator/health"
+}
+
+# RDS設定
+variable "db_allocated_storage" {
+  description = "RDSデータベースの割り当てストレージ (GB)"
+  type        = number
+  default     = 20
+}
+
+variable "db_instance_class" {
+  description = "RDSインスタンスクラス"
+  type        = string
+  default     = "db.t3.micro"
+}
+
+variable "db_username" {
+  description = "データベース管理者ユーザー名"
+  type        = string
+  default     = "recipeapp"
+}
+
+variable "db_password" {
+  description = "データベース管理者パスワード"
+  type        = string
+  default     = "changeme123" # 本番環境では必ず変更。AWS Secrets Managerの利用を推奨
+  sensitive   = true
+}
+
+# Amazon Bedrock設定
+variable "bedrock_model_id" {
+  description = "Amazon Bedrockで使用するモデルID"
+  type        = string
+  default     = "anthropic.claude-3-haiku-20240307-v1:0"
+}
+
+variable "bedrock_max_tokens" {
+  description = "レスポンスの最大トークン数"
+  type        = number
+  default     = 1000
+}
+
+variable "bedrock_temperature" {
+  description = "生成時の温度パラメータ（0.0～1.0）"
+  type        = number
+  default     = 0.5
 } 

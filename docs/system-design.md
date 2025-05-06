@@ -20,7 +20,7 @@ flowchart TD
         E -->|認証済リクエスト| F[Spring Boot API]
         
         F --> G[RDS PostgreSQL]
-        F -->|AI処理リクエスト| H[AI Lambda]
+        F -->|AI処理リクエスト| H[AI Fargate]
         H -->|レシピ生成| I[AWS Bedrock Claude]
         
         J[Cognito] -->|認証| B
@@ -48,7 +48,7 @@ flowchart TD
 
 ### 2.2 バックエンド (Spring Boot) [実装済み/一部計画]
 
-バックエンドはSpring Bootで構築され、現在はローカル開発環境で動作しています。将来的にはAWS Lambdaにデプロイする予定です。
+バックエンドはSpring Bootで構築され、現在はローカル開発環境で動作しています。将来的にはAWS Fargateにデプロイする予定です。
 
 **主要な責務:**
 - ビジネスロジックの実装
@@ -57,14 +57,14 @@ flowchart TD
 - 認証・認可の処理
 
 **技術的特徴:**
-- AWS Lambda最適化された設定
+- AWS Fargate最適化された設定
 - Spring Security JWT認証
 - Amazon RDS (PostgreSQL)接続
 - マイクロサービス指向設計
 
 ### 2.3 AI処理サービス [実装済み/計画発展中]
 
-AI処理は現在バックエンド内に統合されており、AWS Bedrockと直接連携しています。将来的には専用のLambda関数として分離する予定です。
+AI処理は現在バックエンド内に統合されており、AWS Bedrockと直接連携しています。将来的には専用のFargate関数として分離する予定です。
 
 **主要な責務:**
 - プロンプトの構築と最適化
@@ -82,7 +82,7 @@ sequenceDiagram
     participant FE as Next.js
     participant API as API Gateway
     participant BE as Spring Boot
-    participant AI as AI Lambda
+    participant AI as AI Fargate
     participant Bedrock as AWS Bedrock
     participant DB as RDS
 
